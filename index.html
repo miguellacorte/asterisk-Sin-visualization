@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Graph with Chain Movement</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        canvas {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="graphCanvas" width="400" height="400"></canvas>
+    <script>
+        function drawGraph() {
+            const canvas = document.getElementById('graphCanvas');
+            const ctx = canvas.getContext('2d');
+
+            const width = canvas.width;
+            const height = canvas.height;
+
+            ctx.font = '15x monospace'; // Font size for asterisks
+
+            // Function to plot an asterisk
+            function plot(x, y, char = '*') {
+                ctx.fillText(char, x, y);
+            }
+
+            // Draw axes with arrows, centered and equal length
+            function drawArrow(fromX, fromY, toX, toY) {
+                const headlen = 5; // Larger arrowhead for thicker arrows
+                const angle = Math.atan2(toY - fromY, toX - fromX);
+
+                ctx.beginPath();
+                ctx.moveTo(fromX, fromY);
+                ctx.lineTo(toX, toY);
+                ctx.lineTo(toX - headlen * Math.cos(angle - Math.PI / 6), toY - headlen * Math.sin(angle - Math.PI / 6));
+                ctx.moveTo(toX, toY);
+                ctx.lineTo(toX - headlen * Math.cos(angle + Math.PI / 6), toY - headlen * Math.sin(angle + Math.PI / 6));
+                ctx.lineWidth = 1; // Thicker lines for the axes and arrows
+                ctx.strokeStyle = '#000';
+                ctx.stroke();
+            }
+
+            // Calculate the center and the length of the axes
+            const axisLength = Math.min(width, height) / 2 - 40;
+            const centerX = width / 2;
+            const centerY = height / 2;
+
+            // Draw the axes with arrows
+            drawArrow(centerX - axisLength, centerY, centerX + axisLength, centerY); // X-axis
+            drawArrow(centerX, centerY + axisLength, centerX, centerY - axisLength); // Y-axis
+
+            // Parameters for the sine wave to match the curve in your image
+            const a = 2 * Math.PI;
+            const phase = -3 * Math.PI / 4;
+            const scaleX = axisLength * 0.9; // Scaling for X to fit the curve to the axis
+            const scaleY = axisLength * 0.9; // Scaling for Y to fit the curve to the axis
+
+            let t = 0;
+            const speed = 0.005;
+            const tailLength = 190; // Number of asterisks in the chain
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height); // Clear the canvas before each frame
+
+                // Redraw the axes on each frame
+                drawArrow(centerX - axisLength, centerY, centerX + axisLength, centerY); // X-axis
+                drawArrow(centerX, centerY + axisLength, centerX, centerY - axisLength); // Y-axis
+
+                // Plot the chain of asterisks
+                for (let i = 0; i < tailLength; i++) {
+                    const currentT = t - i * speed; // Offset each asterisk in the chain
+                    const x = Math.floor(centerX + scaleX * Math.sin(a * currentT));
+                    const y = Math.floor(centerY - scaleY * Math.sin(a * currentT + phase));
+                    plot(x, y, '*');
+                }
+
+                t += speed;
+                if (t > 1) {
+                    t = 0; // Reset to the beginning of the curve
+                }
+
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        }
+
+        drawGraph();
+    </script>
+</body>
+</html>
