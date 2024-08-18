@@ -28,16 +28,17 @@
             const width = canvas.width;
             const height = canvas.height;
 
-            ctx.font = '15x monospace'; // Font size for asterisks
+            ctx.font = '12px monospace'; // Font size for asterisks
 
             // Function to plot an asterisk
             function plot(x, y, char = '*') {
+                ctx.fillStyle = '#E0521B'; // Set asterisk color to E0521B
                 ctx.fillText(char, x, y);
             }
 
             // Draw axes with arrows, centered and equal length
             function drawArrow(fromX, fromY, toX, toY) {
-                const headlen = 5; // Larger arrowhead for thicker arrows
+                const headlen = 5; // Arrowhead size
                 const angle = Math.atan2(toY - fromY, toX - fromX);
 
                 ctx.beginPath();
@@ -46,8 +47,8 @@
                 ctx.lineTo(toX - headlen * Math.cos(angle - Math.PI / 6), toY - headlen * Math.sin(angle - Math.PI / 6));
                 ctx.moveTo(toX, toY);
                 ctx.lineTo(toX - headlen * Math.cos(angle + Math.PI / 6), toY - headlen * Math.sin(angle + Math.PI / 6));
-                ctx.lineWidth = 1; // Thicker lines for the axes and arrows
-                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = '#787A6B'; // Set axis color to 787A6B
                 ctx.stroke();
             }
 
